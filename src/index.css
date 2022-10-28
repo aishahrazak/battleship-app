@@ -22,8 +22,6 @@ ul {
     background: #fff;
     border: 1px solid #999;
     float: left;
-    font-size: 24px;
-    font-weight: bold;
     line-height: 34px;
     height: 34px;
     margin-right: -1px;
@@ -41,11 +39,71 @@ ul {
     background: #ddd;
 }
 
+.scoreTile{
+    width: 100px;
+    height: 100px;
+    text-align: center;
+}
+
+.score{
+    font-size: 26px;
+    font-weight: bold;
+    padding-top: 20px;
+}
+
+.scoreLine{
+    border: 1px solid darkgrey;
+    width: 80%;
+}
+
+.player{
+    font-size: 14px;
+    vertical-align: bottom;
+}
+
+.player1{
+    background-color: orange;
+    float: left;
+}
+
+.player2{
+    background-color: turquoise;
+    float: right;
+}
+
+.ship{
+    display: flex;
+}
+
+.shipType{
+    padding: 5px;
+    width: 80px;
+    float: left;
+}
+
+.shipCount{
+    float: right;
+    color: grey;
+    padding: 1px;
+    padding: 5px;
+}
+
 .game {
     display: flex;
     flex-direction: row;
+    text-align: center;
+}
+
+.shipInfo{
+    margin: 20px;
 }
 
 .game-info {
-    margin-left: 20px;
+    margin: 0px 20px 20px 20px;
+    display: inline-block;
+}
+
+.game-board{
+    display: inline-block;
+    border-color: orange;
 }
