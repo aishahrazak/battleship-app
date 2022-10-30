@@ -61,6 +61,12 @@ body {
     background: #ddd;
 }
 
+.hitmiss{
+    width: 40px;
+    height: 40px;
+    display: grid;
+}
+
 .scoreBoard{
     display: flex;
     flex-direction: row;
@@ -147,6 +153,11 @@ body {
 
     .game-board{
         margin: 0px;
+    }
+
+    .hitmiss{
+        width: 10vw;
+        height: 10vw;
     }
 
     .square{

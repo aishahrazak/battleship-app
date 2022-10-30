@@ -3,11 +3,34 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import shipData from './shiplayout.json'
 
+var shipPositions = shipData.layout.reduce(function (layout, current){ return current.positions.forEach(pos => layout[pos] = current.ship), layout }, {})
+
 class Square extends React.Component {
+    constructor(props){
+        super(props)
+        let shipType = ""
+        if (this.props.value in shipPositions){
+            shipType = shipPositions[this.props.value]
+        }
+        this.state = {
+            clicked: false,
+            ship: shipType,
+            imageUri: ""
+        };
+    }
+
+    handleClick =() => {
+        if(this.state.ship !== ""){
+            this.setState({clicked: true, imageUri : "assets/Hit.png"})
+        }else{
+            this.setState({clicked: true, imageUri : "assets/Miss.png"})
+        }
+    }
+
     render() {
         return (
-            <button id={this.props.value} key={this.props.value} className="square" onClick={function () { }}>
-                {/* TODO */}
+            <button id={this.props.value} key={this.props.value} className="square" onClick={this.handleClick}>
+                {this.state.clicked && <img class="hitmiss" src={this.state.imageUri}/>}
             </button>
         );
     }
@@ -54,7 +77,7 @@ class ShipInfo extends React.Component {
     render() {
         let shipInfo = []
         for (let ship in shipData.shipTypes) {
-            console.log(ship + " : " + shipData.shipTypes[ship].size)
+            //console.log(ship + " : " + shipData.shipTypes[ship].size)
             shipInfo.push(this.renderShip(ship, shipData.shipTypes[ship].size))
         }
         return (
@@ -66,7 +89,7 @@ class ShipInfo extends React.Component {
 }
 
 class Board extends React.Component {
-    renderSquare(i) {
+    renderSquare(i, shipType) {
         return <Square value={i} />;
     }
 
@@ -75,7 +98,12 @@ class Board extends React.Component {
         for (let i = 0; i < 10; i++) {
             let squares = []
             for (let j = 0; j < 10; j++) {
-                squares.push(this.renderSquare(i + "," + j))
+                let coord = i + "," + j
+                // if (coord in shipPositions){
+                //     console.log(i + "," + j)
+                // }else{
+                    squares.push(this.renderSquare(coord))
+                //}
             }
             let rowId = "row" + i;
             let element = (
@@ -85,6 +113,7 @@ class Board extends React.Component {
             )
             board.push(element)
         }
+        
         return (
             <div className="game-board">
                 {board}
