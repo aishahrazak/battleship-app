@@ -1,21 +1,43 @@
 body {
     font: 14px "Century Gothic", Futura, sans-serif;
-    margin: 20px;
+    margin: unset;
 }
 
-ol,
-ul {
-    padding-left: 30px;
+.header{
+    background: blueviolet;
+    height: 35px;
+    display: flex;
+    align-items: center;
 }
 
-.board-row:after {
-    clear: both;
-    content: "";
-    display: table;
+.menuBtn{
+    background: rgb(57, 57, 57);
+    width: 40px;
+    height: 25px;
+    border: 0;
+    margin: 0px 5px 0px 5px;
 }
 
-.status {
-    margin-bottom: 10px;
+.searchBar{
+    background: white;
+    width: 100%;
+    height: 25px;
+}
+
+.searchBtn{
+    background: rgb(172, 111, 229);
+    width: 40px;
+    height: 25px; 
+    border: 0;
+    margin: 0px 5px 0px 5px;
+}
+
+.appBtn{
+    background: rgb(57, 57, 57);
+    width: 20px;
+    height: 25px;
+    border: 0;
+    margin-right: 5px;
 }
 
 .square {
@@ -23,12 +45,12 @@ ul {
     border: 1px solid #999;
     float: left;
     line-height: 34px;
-    height: 34px;
+    height: 40px;
     margin-right: -1px;
     margin-top: -1px;
     padding: 0;
     text-align: center;
-    width: 34px;
+    width: 40px;
 }
 
 .square:focus {
@@ -39,71 +61,141 @@ ul {
     background: #ddd;
 }
 
-.scoreTile{
+.scoreBoard{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    
+}
+
+.scoreTile {
     width: 100px;
     height: 100px;
     text-align: center;
 }
 
-.score{
+.score {
     font-size: 26px;
     font-weight: bold;
     padding-top: 20px;
 }
 
-.scoreLine{
+.scoreLine {
     border: 1px solid darkgrey;
     width: 80%;
 }
 
-.player{
+.player {
     font-size: 14px;
     vertical-align: bottom;
 }
 
-.player1{
+.player1 {
     background-color: orange;
     float: left;
 }
 
-.player2{
+.player2 {
     background-color: turquoise;
     float: right;
 }
 
-.ship{
+.ship {
     display: flex;
 }
 
-.shipType{
+.shipType {
     padding: 5px;
     width: 80px;
-    float: left;
+    max-height: 30px;
+    height: auto;
 }
 
-.shipCount{
-    float: right;
+.shipCount {
     color: grey;
     padding: 1px;
     padding: 5px;
+    order: 2;
 }
 
 .game {
     display: flex;
     flex-direction: row;
-    text-align: center;
-}
-
-.shipInfo{
-    margin: 20px;
+    justify-content: center;
 }
 
 .game-info {
-    margin: 0px 20px 20px 20px;
-    display: inline-block;
+    margin: 5px;
+    display: flex;
+    flex-direction: column;
+    order: -1;
 }
 
-.game-board{
+.game-board {
+    margin: 5px;
     display: inline-block;
     border-color: orange;
+    border-style: solid;
+}
+
+/* Phone */
+@media screen and (max-width: 480px) {
+    .game {
+        display: block;
+        text-align: center;
+    }
+
+    .game-board{
+        margin: 0px;
+    }
+
+    .square{
+        width: 31px;
+        height: 31px;
+        width: 10vw;
+        height: 10vw;
+    }
+
+    .game-info{
+        margin: 0px;
+    }
+
+    .shipInfo{
+        margin: 20px;
+        order: 1;
+        display: flex;
+        flex-wrap: wrap;
+        max-width: 300px;
+    }
+
+    .shipType{
+        width: 50px;
+    }
+
+    .scoreTile{
+        width: 100%;
+    }
+}
+
+/*Tablet*/
+@media screen and (min-width: 481px) and (max-width: 1024px) {
+    .game {
+        display: block;
+        text-align: center;
+    }
+
+    .game-info{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        margin: 5px 50px 0px 40px;
+    }
+
+    .shipInfo {
+        order: 1;
+        display: flex;
+        flex-wrap: wrap;
+        margin-left: 10px;
+        max-width: 300px;
+    }
 }
