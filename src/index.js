@@ -4,33 +4,44 @@ import './index.css';
 import shipData from './shiplayout.json'
 
 var shipPositions = shipData.layout.reduce(function (layout, current){ return current.positions.forEach(pos => layout[pos] = current.ship), layout }, {})
+const shipImgsDict = {
+    battleship: "assets/Battleship Shape.png",
+    carrier: "assets/Aircraft Shape.png",
+    submarine: "assets/Submarine Shape.png",
+    cruiser: "assets/Cruiser Shape.png",
+    destroyer: "assets/Carrier Shape.png"
+}
 
 class Square extends React.Component {
     constructor(props){
         super(props)
         let shipType = ""
+        let uri = null
         if (this.props.value in shipPositions){
             shipType = shipPositions[this.props.value]
+            uri = shipImgsDict[shipType]
         }
         this.state = {
             clicked: false,
             ship: shipType,
-            imageUri: ""
+            imageUri: uri,
+            hitMissUri : ""
         };
     }
 
     handleClick =() => {
         if(this.state.ship !== ""){
-            this.setState({clicked: true, imageUri : "assets/Hit.png"})
+            this.setState({clicked: true, hitMissUri : "assets/Hit.png"})
         }else{
-            this.setState({clicked: true, imageUri : "assets/Miss.png"})
+            this.setState({clicked: true, hitMissUri : "assets/Miss.png"})
         }
     }
 
     render() {
         return (
             <button id={this.props.value} key={this.props.value} className="square" onClick={this.handleClick}>
-                {this.state.clicked && <img class="hitmiss" src={this.state.imageUri}/>}
+                {this.state.imageUri !== null && <img class="shipOnBoard" src={this.state.imageUri} alt="ship on board" hidden/>}
+                {this.state.clicked && <img class="hitmiss" src={this.state.hitMissUri} alt="hit or miss fire"/>}
             </button>
         );
     }
@@ -57,13 +68,6 @@ class ScoreBoard extends React.Component {
 
 class ShipInfo extends React.Component {
     renderShip(shipType, count) {
-        var shipImgsDict = {
-            battleship: "assets/Battleship Shape.png",
-            carrier: "assets/Aircraft Shape.png",
-            submarine: "assets/Submarine Shape.png",
-            cruiser: "assets/Cruiser Shape.png",
-            destroyer: "assets/Carrier Shape.png",
-        }
         let imgPath = shipImgsDict[shipType]
         let size = "o ".repeat(count)
         return (

@@ -67,6 +67,16 @@ body {
     display: grid;
 }
 
+.shipOnBoard{
+    width: 40px;
+    -webkit-transform:rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    transform: rotate(45deg);
+    vertical-align: middle;
+}
+
 .scoreBoard{
     display: flex;
     flex-direction: row;
@@ -158,6 +168,11 @@ body {
     .hitmiss{
         width: 10vw;
         height: 10vw;
+    }
+
+    .shipOnBoard{
+        width: 10vw;
+        height: auto;
     }
 
     .square{
