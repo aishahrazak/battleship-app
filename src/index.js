@@ -36,6 +36,8 @@ class Square extends React.Component {
             if(this.state.ship !== ""){
                 this.setState({clicked: true, hitMissUri : "assets/Hit.png"})
                 this.props.updateShipCount(this.state.ship)
+                //Assuming player scores if it hits a ship
+                this.props.updateScore()
             }else{
                 this.setState({clicked: true, hitMissUri : "assets/Miss.png"})
             }
@@ -57,12 +59,12 @@ class ScoreBoard extends React.Component {
         return (
             <div className="scoreBoard">
                 <div className="scoreTile player1">
-                    <div className="score">00</div>
+                    <div className="score">{String(this.props.scores.player1).padStart(2, '0')}</div>
                     <hr className="scoreLine" />
                     <div className="player">player 1</div>
                 </div>
                 <div className="scoreTile player2">
-                    <div className="score">00</div>
+                    <div className="score">{String(this.props.scores.player2).padStart(2, '0')}</div>
                     <hr className="scoreLine" />
                     <div className="player">player 2</div>
                 </div>
@@ -108,7 +110,7 @@ class ShipInfo extends React.Component {
 
 class Board extends React.Component {
     renderSquare(i) {
-        return <Square value={i} key={i} updateShipCount={this.props.updateShipCount}/>;
+        return <Square value={i} key={i} updateShipCount={this.props.updateShipCount} updateScore={this.props.updateScore}/>;
     }
 
     render() {
@@ -145,10 +147,15 @@ class Game extends React.Component {
             hitMissCount[ship].count = 0
         }
         this.state = {
-            shipHitMissCount : hitMissCount
+            shipHitMissCount : hitMissCount,
+            scores : {
+                player1 : 0,
+                player2: 0
+            }
         }
         //Bind the function
         this.updateCount = this.updateCount.bind(this)
+        this.updateScore = this.updateScore.bind(this)
     }
 
     renderHeader(){
@@ -168,7 +175,19 @@ class Game extends React.Component {
         this.setState(prevState => {
             let oldCounts = {...prevState.shipHitMissCount}
             oldCounts[val].count ++
-            return {oldCounts}
+            return ({shipHitMissCount: oldCounts, ...prevState.scores})
+        })
+    }
+
+    //Update for player 1 only for now as per req
+    updateScore(){
+        this.setState(prevState => {
+            let oldScores = {...prevState.scores}
+            oldScores.player1 ++
+            return({
+                ...prevState.shipHitMissCount,
+                scores : oldScores
+            })
         })
     }
 
@@ -177,9 +196,9 @@ class Game extends React.Component {
             <div>
                 {this.renderHeader()}
                 <div className="game">
-                    <Board updateShipCount={this.updateCount}/>
+                    <Board updateShipCount={this.updateCount} updateScore={this.updateScore}/>
                     <div className="game-info">
-                        <ScoreBoard />
+                        <ScoreBoard scores={this.state.scores}/>
                         <ShipInfo shipCount={this.state.shipHitMissCount}/>
                     </div>
                 </div>
