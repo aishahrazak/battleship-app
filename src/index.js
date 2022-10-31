@@ -5,6 +5,7 @@ import shipData from './shiplayout.json'
 
 //Get all board coordinate where ship is on it and its corresponding ship type
 var shipPositions = shipData.layout.reduce(function (layout, current){ return current.positions.forEach(pos => layout[pos] = current.ship), layout }, {})
+const shipCounts = Object.values(shipPositions).length
 const shipImgsDict = {
     battleship: "assets/Battleship Shape.png",
     carrier: "assets/Aircraft Shape.png",
@@ -46,7 +47,7 @@ class Square extends React.Component {
 
     render() {
         return (
-            <button id={this.props.value} className="square" onClick={this.handleClick}>
+            <button id={this.props.value} className="square" onClick={this.handleClick} disabled={this.props.freeze}>
                 {this.state.imageUri !== null && <img className="shipOnBoard" src={this.state.imageUri} alt="ship on board" hidden/>}
                 {this.state.clicked && <img className="hitmiss" src={this.state.hitMissUri} alt="hit or miss fire"/>}
             </button>
@@ -110,7 +111,7 @@ class ShipInfo extends React.Component {
 
 class Board extends React.Component {
     renderSquare(i) {
-        return <Square value={i} key={i} updateShipCount={this.props.updateShipCount} updateScore={this.props.updateScore}/>;
+        return <Square value={i} key={i} updateShipCount={this.props.updateShipCount} updateScore={this.props.updateScore} freeze={this.props.freezeBoard}/>;
     }
 
     render() {
@@ -151,11 +152,16 @@ class Game extends React.Component {
             scores : {
                 player1 : 0,
                 player2: 0
-            }
+            },
+            gameOver : false
         }
         //Bind the function
         this.updateCount = this.updateCount.bind(this)
         this.updateScore = this.updateScore.bind(this)
+    }
+
+    renderOver(){
+
     }
 
     renderHeader(){
@@ -175,7 +181,11 @@ class Game extends React.Component {
         this.setState(prevState => {
             let oldCounts = {...prevState.shipHitMissCount}
             oldCounts[val].count ++
-            return ({shipHitMissCount: oldCounts, ...prevState.scores})
+            let over = false
+            if( Object.values(oldCounts).reduce(function(sum, x){return sum + x.count}, 0) === shipCounts){
+                over = true
+            }
+            return ({shipHitMissCount: oldCounts, ...prevState.scores, gameOver : over})
         })
     }
 
@@ -185,7 +195,7 @@ class Game extends React.Component {
             let oldScores = {...prevState.scores}
             oldScores.player1 ++
             return({
-                ...prevState.shipHitMissCount,
+                ...prevState,
                 scores : oldScores
             })
         })
@@ -196,11 +206,12 @@ class Game extends React.Component {
             <div>
                 {this.renderHeader()}
                 <div className="game">
-                    <Board updateShipCount={this.updateCount} updateScore={this.updateScore}/>
+                    <Board updateShipCount={this.updateCount} updateScore={this.updateScore} freezeBoard={this.state.gameOver}/>
                     <div className="game-info">
                         <ScoreBoard scores={this.state.scores}/>
                         <ShipInfo shipCount={this.state.shipHitMissCount}/>
                     </div>
+                    {this.state.gameOver && <div className="gameOver">Game Over</div>}
                 </div>
             </div>
         );
