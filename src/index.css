@@ -134,6 +134,14 @@ body {
     order: 2;
 }
 
+.missCount{
+    width: 10px;
+}
+
+.hitCount{
+    width: 10px;
+}
+
 .game {
     display: flex;
     flex-direction: row;

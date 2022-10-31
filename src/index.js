@@ -76,10 +76,19 @@ class ShipInfo extends React.Component {
         let imgPath = shipImgsDict[shipType]
         let hitCount = this.props.shipCount[shipType].count
         let missCount = this.props.shipCount[shipType].size - hitCount
+        let numShip = []
+        for(let i=0; i < missCount; i++){
+            let k = shipType + "-miss" + i
+            numShip.push(<img className="missCount" src="assets/Miss small.png" alt="miss" key={k} />)
+        }
+        for(let i=0; i < hitCount; i++){
+            let k = shipType + "-hit" + i
+            numShip.push(<img className="missCount" src="assets/Hit small.png" alt="hit" key={k}/>)
+        }
         return (
             <div key={shipType} className="ship">
                 <img className="shipType" src={imgPath} alt={shipType} />
-                <div className="shipCount">{missCount} {hitCount}</div>
+                <div className="shipCount">{numShip}</div>
             </div>
         )
     }
