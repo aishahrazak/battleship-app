@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import shipData from './shiplayout.json'
 
+//Get all board coordinate where ship is on it and its corresponding ship type
 var shipPositions = shipData.layout.reduce(function (layout, current){ return current.positions.forEach(pos => layout[pos] = current.ship), layout }, {})
 const shipImgsDict = {
     battleship: "assets/Battleship Shape.png",
@@ -30,18 +31,22 @@ class Square extends React.Component {
     }
 
     handleClick =() => {
-        if(this.state.ship !== ""){
-            this.setState({clicked: true, hitMissUri : "assets/Hit.png"})
-        }else{
-            this.setState({clicked: true, hitMissUri : "assets/Miss.png"})
+        //only update state for the first click. cant click twice
+        if(this.state.clicked === false){
+            if(this.state.ship !== ""){
+                this.setState({clicked: true, hitMissUri : "assets/Hit.png"})
+                this.props.updateShipCount(this.state.ship)
+            }else{
+                this.setState({clicked: true, hitMissUri : "assets/Miss.png"})
+            }
         }
     }
 
     render() {
         return (
-            <button id={this.props.value} key={this.props.value} className="square" onClick={this.handleClick}>
-                {this.state.imageUri !== null && <img class="shipOnBoard" src={this.state.imageUri} alt="ship on board" hidden/>}
-                {this.state.clicked && <img class="hitmiss" src={this.state.hitMissUri} alt="hit or miss fire"/>}
+            <button id={this.props.value} className="square" onClick={this.handleClick}>
+                {this.state.imageUri !== null && <img className="shipOnBoard" src={this.state.imageUri} alt="ship on board" hidden/>}
+                {this.state.clicked && <img className="hitmiss" src={this.state.hitMissUri} alt="hit or miss fire"/>}
             </button>
         );
     }
@@ -67,13 +72,14 @@ class ScoreBoard extends React.Component {
 }
 
 class ShipInfo extends React.Component {
-    renderShip(shipType, count) {
+    renderShip(shipType) {
         let imgPath = shipImgsDict[shipType]
-        let size = "o ".repeat(count)
+        let hitCount = this.props.shipCount[shipType].count
+        let missCount = this.props.shipCount[shipType].size - hitCount
         return (
             <div key={shipType} className="ship">
                 <img className="shipType" src={imgPath} alt={shipType} />
-                <div className="shipCount">{size}</div>
+                <div className="shipCount">{missCount} {hitCount}</div>
             </div>
         )
     }
@@ -81,8 +87,7 @@ class ShipInfo extends React.Component {
     render() {
         let shipInfo = []
         for (let ship in shipData.shipTypes) {
-            //console.log(ship + " : " + shipData.shipTypes[ship].size)
-            shipInfo.push(this.renderShip(ship, shipData.shipTypes[ship].size))
+            shipInfo.push(this.renderShip(ship))
         }
         return (
             <div className="shipInfo">
@@ -93,8 +98,8 @@ class ShipInfo extends React.Component {
 }
 
 class Board extends React.Component {
-    renderSquare(i, shipType) {
-        return <Square value={i} />;
+    renderSquare(i) {
+        return <Square value={i} key={i} updateShipCount={this.props.updateShipCount}/>;
     }
 
     render() {
@@ -103,11 +108,7 @@ class Board extends React.Component {
             let squares = []
             for (let j = 0; j < 10; j++) {
                 let coord = i + "," + j
-                // if (coord in shipPositions){
-                //     console.log(i + "," + j)
-                // }else{
-                    squares.push(this.renderSquare(coord))
-                //}
+                squares.push(this.renderSquare(coord))
             }
             let rowId = "row" + i;
             let element = (
@@ -127,6 +128,20 @@ class Board extends React.Component {
 }
 
 class Game extends React.Component {
+    constructor(props){
+        super(props)
+        //Initialize each ship type hit counts
+        var hitMissCount = shipData.shipTypes
+        for (let ship in hitMissCount){
+            hitMissCount[ship].count = 0
+        }
+        this.state = {
+            shipHitMissCount : hitMissCount
+        }
+        //Bind the function
+        this.updateCount = this.updateCount.bind(this)
+    }
+
     renderHeader(){
         return (
             <div className="header">
@@ -140,15 +155,23 @@ class Game extends React.Component {
         );
     }
 
+    updateCount(val){
+        this.setState(prevState => {
+            let oldCounts = {...prevState.shipHitMissCount}
+            oldCounts[val].count ++
+            return {oldCounts}
+        })
+    }
+
     render() {
         return (
             <div>
                 {this.renderHeader()}
                 <div className="game">
-                    <Board />
+                    <Board updateShipCount={this.updateCount}/>
                     <div className="game-info">
                         <ScoreBoard />
-                        <ShipInfo />
+                        <ShipInfo shipCount={this.state.shipHitMissCount}/>
                     </div>
                 </div>
             </div>
